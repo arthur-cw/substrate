@@ -144,6 +144,22 @@ pub mod pallet {
 			Pallet::<T>::initialize_authorities(&self.authorities);
 		}
 	}
+
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {
+		#[pallet::call_index(0)]
+		#[pallet::weight(0)]
+		pub fn change_authorities_call(
+			origin: OriginFor<T>,
+			new: BoundedVec<T::AuthorityId, T::MaxAuthorities>,
+		) -> DispatchResult {
+			ensure_root(origin)?;
+
+			Self::change_authorities(new);
+
+			Ok(())
+		}
+	}
 }
 
 impl<T: Config> Pallet<T> {
@@ -181,7 +197,7 @@ impl<T: Config> Pallet<T> {
 		let pre_runtime_digests = digest.logs.iter().filter_map(|d| d.as_pre_runtime());
 		for (id, mut data) in pre_runtime_digests {
 			if id == AURA_ENGINE_ID {
-				return Slot::decode(&mut data).ok()
+				return Slot::decode(&mut data).ok();
 			}
 		}
 
@@ -252,7 +268,7 @@ impl<T: Config> FindAuthor<u32> for Pallet<T> {
 			if id == AURA_ENGINE_ID {
 				let slot = Slot::decode(&mut data).ok()?;
 				let author_index = *slot % Self::authorities().len() as u64;
-				return Some(author_index as u32)
+				return Some(author_index as u32);
 			}
 		}
 
