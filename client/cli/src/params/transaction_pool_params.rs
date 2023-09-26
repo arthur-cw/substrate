@@ -18,6 +18,7 @@
 
 use clap::Args;
 use sc_service::config::TransactionPoolOptions;
+use std::time::Duration;
 
 /// Parameters used to create the pool configuration.
 #[derive(Debug, Clone, Args)]
@@ -29,6 +30,15 @@ pub struct TransactionPoolParams {
 	/// Maximum number of kilobytes of all transactions stored in the pool.
 	#[clap(long, value_name = "COUNT", default_value = "20480")]
 	pub pool_kbytes: usize,
+
+	/// How long a transaction is banned for, if it is considered invalid. Defaults to 1800s.
+	#[clap(long, value_name = "SECONDS", default_value = "1800", parse(try_from_str = parse_duration))]
+	pub tx_ban_time: Duration,
+}
+
+fn parse_duration(arg: &str) -> Result<std::time::Duration, std::num::ParseIntError> {
+	let seconds = arg.parse()?;
+	Ok(Duration::from_secs(seconds))
 }
 
 impl TransactionPoolParams {
@@ -44,6 +54,8 @@ impl TransactionPoolParams {
 		let factor = 10;
 		opts.future.count = self.pool_limit / factor;
 		opts.future.total_bytes = self.pool_kbytes * 1024 / factor;
+
+		opts.ban_time = self.tx_ban_time;
 
 		opts
 	}

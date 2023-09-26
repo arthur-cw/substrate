@@ -27,7 +27,7 @@ use sp_runtime::{
 		TransactionSource, TransactionTag as Tag, TransactionValidity, TransactionValidityError,
 	},
 };
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use super::{
 	base_pool as base,
@@ -108,6 +108,8 @@ pub struct Options {
 	pub future: base::Limit,
 	/// Reject future transactions.
 	pub reject_future_transactions: bool,
+	/// Ban time for extrinsics
+	pub ban_time: Duration,
 }
 
 impl Default for Options {
@@ -116,6 +118,7 @@ impl Default for Options {
 			ready: base::Limit { count: 8192, total_bytes: 20 * 1024 * 1024 },
 			future: base::Limit { count: 512, total_bytes: 1 * 1024 * 1024 },
 			reject_future_transactions: false,
+			ban_time: Duration::from_secs(60 * 30),
 		}
 	}
 }

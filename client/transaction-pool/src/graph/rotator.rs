@@ -50,7 +50,12 @@ impl<Hash: hash::Hash + Eq> Default for PoolRotator<Hash> {
 	}
 }
 
-impl<Hash: hash::Hash + Eq + Clone> PoolRotator<Hash> {
+impl<Hash: hash::Hash + std::fmt::Debug + Eq + Clone> PoolRotator<Hash> {
+	/// New rotator instance with specified ban time.
+	pub fn new(ban_time: Duration) -> Self {
+		Self { ban_time, banned_until: Default::default() }
+	}
+
 	/// Returns `true` if extrinsic hash is currently banned.
 	pub fn is_banned(&self, hash: &Hash) -> bool {
 		self.banned_until.read().contains_key(hash)
@@ -71,6 +76,8 @@ impl<Hash: hash::Hash + Eq + Clone> PoolRotator<Hash> {
 				}
 			}
 		}
+
+		log::debug!(target: "txpool", "Currently banned transactions: {:?}", banned.keys());
 	}
 
 	/// Bans extrinsic if it's stale.

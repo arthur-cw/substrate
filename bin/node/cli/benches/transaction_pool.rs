@@ -34,6 +34,7 @@ use sc_transaction_pool_api::{TransactionPool as _, TransactionSource, Transacti
 use sp_core::{crypto::Pair, sr25519};
 use sp_keyring::Sr25519Keyring;
 use sp_runtime::{generic::BlockId, OpaqueExtrinsic};
+use std::time::Duration;
 use tokio::runtime::Handle;
 
 fn new_node(tokio_handle: Handle) -> node_cli::service::NewFullBase {
@@ -58,6 +59,7 @@ fn new_node(tokio_handle: Handle) -> node_cli::service::NewFullBase {
 			ready: PoolLimit { count: 100_000, total_bytes: 100 * 1024 * 1024 },
 			future: PoolLimit { count: 100_000, total_bytes: 100 * 1024 * 1024 },
 			reject_future_transactions: false,
+			ban_time: Duration::from_secs(60 * 30),
 		},
 		network: network_config,
 		keystore: KeystoreConfig::InMemory,
