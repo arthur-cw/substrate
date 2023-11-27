@@ -140,6 +140,22 @@ pub mod pallet {
 			Pallet::<T>::initialize_authorities(&self.authorities);
 		}
 	}
+
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {
+		#[pallet::call_index(0)]
+		#[pallet::weight(0)]
+		pub fn change_authorities_call(
+			origin: OriginFor<T>,
+			new: BoundedVec<T::AuthorityId, T::MaxAuthorities>,
+		) -> DispatchResult {
+			ensure_root(origin)?;
+
+			Self::change_authorities(new);
+
+			Ok(())
+		}
+	}
 }
 
 impl<T: Config> Pallet<T> {
