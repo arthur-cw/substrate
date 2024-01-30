@@ -244,15 +244,15 @@
 //!
 //! More precise usage details are still being worked on and will likely change in the future.
 
-mod behaviour;
-mod discovery;
-mod peer_info;
-mod protocol;
-mod request_responses;
-mod schema;
-mod service;
-mod transport;
-mod utils;
+pub mod behaviour;
+pub mod discovery;
+pub mod peer_info;
+pub mod protocol;
+pub mod request_responses;
+pub mod schema;
+pub mod service;
+pub mod transport;
+pub mod utils;
 
 pub mod bitswap;
 pub mod config;
