@@ -27,15 +27,15 @@
 //! instantiated. The `BasicQueue` and `BasicVerifier` traits allow serial
 //! queues to be instantiated simply.
 
-pub use std::{collections::HashMap, iter::FromIterator};
+use std::{collections::HashMap, iter::FromIterator};
 
-pub use log::{debug, trace};
-pub use sp_runtime::{
+use log::{debug, trace};
+use sp_runtime::{
 	traits::{Block as BlockT, Header as _, NumberFor},
 	Justifications,
 };
 
-pub use crate::{
+use crate::{
 	block_import::{
 		BlockCheckParams, BlockImport, BlockImportParams, ImportResult, ImportedAux, ImportedState,
 		JustificationImport, StateAction,
@@ -43,7 +43,7 @@ pub use crate::{
 	metrics::Metrics,
 };
 pub use basic_queue::BasicQueue;
-pub use sp_consensus::{error::Error as ConsensusError, BlockOrigin, CacheKeyId};
+use sp_consensus::{error::Error as ConsensusError, BlockOrigin, CacheKeyId};
 
 /// A commonly-used Import Queue type.
 ///
