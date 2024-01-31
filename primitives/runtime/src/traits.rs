@@ -878,6 +878,12 @@ pub trait Hash:
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 pub struct BlakeTwo256;
 
+impl Default for BlakeTwo256 {
+    fn default() -> Self {
+        BlakeTwo256
+    }
+}
+
 impl Hasher for BlakeTwo256 {
 	type Out = sp_core::H256;
 	type StdHasher = hash256_std_hasher::Hash256StdHasher;
