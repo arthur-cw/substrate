@@ -1977,7 +1977,6 @@ impl NetworkBehaviour for Notifications {
 		cx: &mut Context,
 		_params: &mut impl PollParameters,
 	) -> Poll<NetworkBehaviourAction<Self::OutEvent, Self::ConnectionHandler>> {
-		dbg!("polling pop front");
 		if let Some(event) = self.events.pop_front() {
 			return Poll::Ready(event)
 		}
@@ -1987,15 +1986,19 @@ impl NetworkBehaviour for Notifications {
 		loop {
 			match futures::Stream::poll_next(Pin::new(&mut self.peerset), cx) {
 				Poll::Ready(Some(sc_peerset::Message::Accept(index))) => {
+					dbg!("message::accept");
 					self.peerset_report_accept(index);
 				},
 				Poll::Ready(Some(sc_peerset::Message::Reject(index))) => {
+					dbg!("message::reject");
 					self.peerset_report_reject(index);
 				},
 				Poll::Ready(Some(sc_peerset::Message::Connect { peer_id, set_id, .. })) => {
+					dbg!("message::connect");
 					self.peerset_report_connect(peer_id, set_id);
 				},
 				Poll::Ready(Some(sc_peerset::Message::Drop { peer_id, set_id, .. })) => {
+					dbg!("message::drop");
 					self.peerset_report_disconnect(peer_id, set_id);
 				},
 				Poll::Ready(None) => {
@@ -2067,7 +2070,6 @@ impl NetworkBehaviour for Notifications {
 			}
 		}
 
-		dbg!("polling pop front");
 		if let Some(event) = self.events.pop_front() {
 			return Poll::Ready(event)
 		}
