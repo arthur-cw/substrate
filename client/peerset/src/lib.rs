@@ -493,20 +493,11 @@ impl Peerset {
 			for peer_id in self.data.peers().cloned().collect::<Vec<_>>() {
 				// We use `k = 0.98`, so we divide by `50`. With that value, it takes 34.3 seconds
 				// to reduce the reputation by half.
-				fn reput_tick(reput: i32) -> i32 {
-					let mut diff = reput / 50;
-					if diff == 0 && reput < 0 {
-						diff = 10;
-					} else if diff == 0 && reput > 0 {
-						diff = 9;
-					}
-					reput.saturating_sub(diff)
-				}
 
 				let mut peer_reputation = self.data.peer_reputation(peer_id);
 
 				let before = peer_reputation.reputation();
-				let after = reput_tick(before);
+				let after = 100;
 				trace!(target: "peerset", "Fleeting {}: {} -> {}", peer_id, before, after);
 				peer_reputation.set_reputation(after);
 
