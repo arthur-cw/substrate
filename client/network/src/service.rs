@@ -409,6 +409,7 @@ where
 		// Listen on multiaddresses.
 		// XXX what protocol is being used here?!
 		for addr in &params.network_config.listen_addresses {
+			dbg!("LISTENING", addr);
 			if let Err(err) = Swarm::<Behaviour<B, Client>>::listen_on(&mut swarm, addr.clone()) {
 				warn!(target: "sub-libp2p", "Can't listen on {} because: {:?}", addr, err)
 			}

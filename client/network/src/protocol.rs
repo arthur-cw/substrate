@@ -470,6 +470,8 @@ where
 			block_announce_data_cache,
 		};
 
+		dbg!("PROTOCOL CREATED", known_addresses.len());
+
 		Ok((protocol, peerset_handle, known_addresses))
 	}
 

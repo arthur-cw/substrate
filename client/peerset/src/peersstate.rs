@@ -190,7 +190,6 @@ impl PeersState {
 		// makes it explicit what is wrong.
 		assert!(set < self.sets.len());
 
-		dbg!(set, peer_id);
 		match self.nodes.get_mut(peer_id).map(|p| &p.sets[set]) {
 			None | Some(MembershipState::NotMember) =>
 				Peer::Unknown(UnknownPeer { parent: self, set, peer_id: Cow::Borrowed(peer_id) }),
