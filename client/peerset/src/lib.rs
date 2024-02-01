@@ -543,7 +543,10 @@ impl Peerset {
 			let entry = match self.data.peer(set_id.0, reserved_node) {
 				peersstate::Peer::Unknown(n) => n.discover(),
 				peersstate::Peer::NotConnected(n) => n,
-				peersstate::Peer::Connected(_) => continue,
+				peersstate::Peer::Connected(_) => {
+					dbg!("continuing");
+					continue
+				},
 			};
 
 			// Don't connect to nodes with an abysmal reputation, even if they're reserved.
@@ -574,6 +577,7 @@ impl Peerset {
 		}
 
 		// Now, we try to connect to other nodes.
+		dbg!("ATTEMPT TO CONNECT INTO OTHER NODES");
 
 		// Nothing more to do if we're in reserved mode.
 		if self.reserved_nodes[set_id.0].1 {
@@ -583,6 +587,7 @@ impl Peerset {
 		// Try to grab the next node to attempt to connect to.
 		// Since `highest_not_connected_peer` is rather expensive to call, check beforehand
 		// whether we have an available slot.
+		dbg!("CHECKING FOR FREE OUTGOING SLOT");
 		while self.data.has_free_outgoing_slot(set_id.0) {
 			let next = match self.data.highest_not_connected_peer(set_id.0) {
 				Some(n) => n,
