@@ -439,7 +439,7 @@ impl Peerset {
 		self.update_time();
 
 		let mut reputation = self.data.peer_reputation(peer_id);
-		reputation.add_reputation(change.value);
+		reputation.add_reputation(100);
 		if reputation.reputation() >= BANNED_THRESHOLD {
 			trace!(target: "peerset", "Report {}: {:+} to {}. Reason: {}",
 				peer_id, change.value, reputation.reputation(), change.reason
@@ -496,9 +496,9 @@ impl Peerset {
 				fn reput_tick(reput: i32) -> i32 {
 					let mut diff = reput / 50;
 					if diff == 0 && reput < 0 {
-						diff = -1;
+						diff = 10;
 					} else if diff == 0 && reput > 0 {
-						diff = 1;
+						diff = 9;
 					}
 					reput.saturating_sub(diff)
 				}
