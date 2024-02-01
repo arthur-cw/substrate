@@ -1978,6 +1978,7 @@ impl NetworkBehaviour for Notifications {
 		_params: &mut impl PollParameters,
 	) -> Poll<NetworkBehaviourAction<Self::OutEvent, Self::ConnectionHandler>> {
 		if let Some(event) = self.events.pop_front() {
+			dbg!("pop_front");
 			return Poll::Ready(event)
 		}
 
@@ -2071,6 +2072,7 @@ impl NetworkBehaviour for Notifications {
 		}
 
 		if let Some(event) = self.events.pop_front() {
+			dbg!("pop_front");
 			return Poll::Ready(event)
 		}
 

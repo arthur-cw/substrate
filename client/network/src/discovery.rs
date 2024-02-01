@@ -715,6 +715,7 @@ impl NetworkBehaviour for DiscoveryBehaviour {
 	) -> Poll<NetworkBehaviourAction<Self::OutEvent, Self::ConnectionHandler>> {
 		// Immediately process the content of `discovered`.
 		if let Some(ev) = self.pending_events.pop_front() {
+			dbg!("pop_front");
 			return Poll::Ready(NetworkBehaviourAction::GenerateEvent(ev))
 		}
 

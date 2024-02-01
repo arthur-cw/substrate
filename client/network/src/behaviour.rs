@@ -603,6 +603,7 @@ where
 	) -> Poll<NetworkBehaviourAction<BehaviourOut<B>, <Self as NetworkBehaviour>::ConnectionHandler>>
 	{
 		if let Some(event) = self.events.pop_front() {
+			dbg!("pop_front");
 			return Poll::Ready(NetworkBehaviourAction::GenerateEvent(event))
 		}
 
