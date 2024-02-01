@@ -174,7 +174,8 @@ impl PeersetHandle {
 		let _ = self.tx.unbounded_send(Action::PeerReputation(peer_id, tx));
 
 		// The channel can only be closed if the peerset no longer exists.
-		rx.await.map_err(|_| ())
+		rx.await.map_err(|_| ());
+		Ok(100)
 	}
 }
 
@@ -307,6 +308,7 @@ impl Peerset {
 
 			for peer_id in set_config.bootnodes {
 				if let peersstate::Peer::Unknown(entry) = peerset.data.peer(set, &peer_id) {
+					dbg!("CALLING DISCOVER");
 					entry.discover();
 				} else {
 					debug!(target: "peerset", "Duplicate bootnode in config: {:?}", peer_id);
@@ -539,7 +541,6 @@ impl Peerset {
 
 		// Try to connect to all the reserved nodes that we are not connected to.
 		for reserved_node in &self.reserved_nodes[set_id.0].0 {
-			dbg!("ATTEMPT TO CONNECT INTO RESERVED NODES");
 			let entry = match self.data.peer(set_id.0, reserved_node) {
 				peersstate::Peer::Unknown(n) => n.discover(),
 				peersstate::Peer::NotConnected(n) => n,
@@ -575,9 +576,6 @@ impl Peerset {
 				},
 			}
 		}
-
-		// Now, we try to connect to other nodes.
-		dbg!("ATTEMPT TO CONNECT INTO OTHER NODES");
 
 		// Nothing more to do if we're in reserved mode.
 		if self.reserved_nodes[set_id.0].1 {
