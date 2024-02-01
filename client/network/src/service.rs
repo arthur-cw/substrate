@@ -2088,6 +2088,19 @@ where
 			};
 		}
 
+		loop {
+			dbg!("debug");
+			dbg!("debug");
+			dbg!("debug");
+			dbg!("debug");
+			dbg!("debug");
+			dbg!("debug");
+			dbg!("debug");
+			dbg!("debug");
+			dbg!("debug");
+			dbg!("debug");
+			dbg!("debug");
+		}
 		let num_connected_peers =
 			this.network_service.behaviour_mut().user_protocol_mut().num_connected_peers();
 
