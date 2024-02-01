@@ -301,6 +301,7 @@ impl NetworkBehaviour for PeerInfoBehaviour {
 		error: &libp2p::swarm::DialError,
 	) {
 		let (ping_handler, identity_handler) = handler.into_inner();
+		dbg!("inject_dial_failure");
 		self.identify.inject_dial_failure(peer_id, identity_handler, error);
 		self.ping.inject_dial_failure(peer_id, ping_handler, error);
 	}

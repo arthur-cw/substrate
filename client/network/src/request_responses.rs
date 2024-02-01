@@ -415,6 +415,7 @@ impl NetworkBehaviour for RequestResponsesBehaviour {
 		_: Self::ConnectionHandler,
 		error: &libp2p::swarm::DialError,
 	) {
+		dbg!("inject_dial_failure");
 		for (p, _) in self.protocols.values_mut() {
 			let handler = p.new_handler();
 			NetworkBehaviour::inject_dial_failure(p, peer_id, handler, error)

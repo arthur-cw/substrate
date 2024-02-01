@@ -202,6 +202,7 @@ impl NetworkBehaviour for CustomProtoWithAddr {
 		handler: Self::ConnectionHandler,
 		error: &DialError,
 	) {
+		dbg!("inject_dial_failure");
 		self.inner.inject_dial_failure(peer_id, handler, error)
 	}
 

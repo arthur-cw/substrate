@@ -624,6 +624,7 @@ impl NetworkBehaviour for DiscoveryBehaviour {
 
 		for k in self.kademlias.values_mut() {
 			let handler = k.new_handler();
+			dbg!("inject_dial_failure");
 			NetworkBehaviour::inject_dial_failure(k, peer_id, handler, error);
 		}
 	}
@@ -925,6 +926,7 @@ impl NetworkBehaviour for DiscoveryBehaviour {
 						self.pending_events
 							.extend(list.map(|(peer_id, _)| DiscoveryOut::Discovered(peer_id)));
 						if let Some(ev) = self.pending_events.pop_front() {
+							dbg!("polling pop front");
 							return Poll::Ready(NetworkBehaviourAction::GenerateEvent(ev))
 						}
 					},

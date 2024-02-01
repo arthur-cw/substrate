@@ -1385,12 +1385,14 @@ impl NetworkBehaviour for Notifications {
 		}
 	}
 
+	//XXX why not called
 	fn inject_dial_failure(
 		&mut self,
 		peer_id: Option<PeerId>,
 		_: Self::ConnectionHandler,
 		error: &DialError,
 	) {
+		dbg!("inject_dial_failure");
 		if let DialError::Transport(errors) = error {
 			for (addr, error) in errors.iter() {
 				trace!(target: "sub-libp2p", "Libp2p => Reach failure for {:?} through {:?}: {:?}", peer_id, addr, error);
@@ -1975,6 +1977,7 @@ impl NetworkBehaviour for Notifications {
 		cx: &mut Context,
 		_params: &mut impl PollParameters,
 	) -> Poll<NetworkBehaviourAction<Self::OutEvent, Self::ConnectionHandler>> {
+		dbg!("polling pop front");
 		if let Some(event) = self.events.pop_front() {
 			return Poll::Ready(event)
 		}
@@ -2064,6 +2067,7 @@ impl NetworkBehaviour for Notifications {
 			}
 		}
 
+		dbg!("polling pop front");
 		if let Some(event) = self.events.pop_front() {
 			return Poll::Ready(event)
 		}

@@ -1827,6 +1827,7 @@ where
 		handler: Self::ConnectionHandler,
 		error: &libp2p::swarm::DialError,
 	) {
+		dbg!("inject_dial_failure");
 		self.behaviour.inject_dial_failure(peer_id, handler, error);
 	}
 
