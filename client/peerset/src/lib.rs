@@ -539,6 +539,7 @@ impl Peerset {
 
 		// Try to connect to all the reserved nodes that we are not connected to.
 		for reserved_node in &self.reserved_nodes[set_id.0].0 {
+			dbg!("ATTEMPT TO CONNECT INTO RESERVED NODES");
 			let entry = match self.data.peer(set_id.0, reserved_node) {
 				peersstate::Peer::Unknown(n) => n.discover(),
 				peersstate::Peer::NotConnected(n) => n,
@@ -549,10 +550,12 @@ impl Peerset {
 			// This is a rather opinionated behaviour, and it wouldn't be fundamentally wrong to
 			// remove that check. If necessary, the peerset should be refactored to give more
 			// control over what happens in that situation.
+			dbg!("CHECKING RESERVATION REPUTATION");
 			if entry.reputation() < BANNED_THRESHOLD {
 				break
 			}
 
+			dbg!("TRYING TO CONNECT TO RESERVED NODES");
 			match entry.try_outgoing() {
 				Ok(conn) => self
 					.message_queue

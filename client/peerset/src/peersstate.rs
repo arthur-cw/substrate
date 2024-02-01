@@ -467,10 +467,12 @@ impl<'a> NotConnectedPeer<'a> {
 	///
 	/// Non-slot-occupying nodes don't count towards the number of slots.
 	pub fn try_outgoing(self) -> Result<ConnectedPeer<'a>, Self> {
+		dbg!("TRY_OUTGOING");
 		let is_no_slot_occupy = self.state.sets[self.set].no_slot_nodes.contains(&*self.peer_id);
 
 		// Note that it is possible for num_out to be strictly superior to the max, in case we were
 		// connected to reserved node then marked them as not reserved.
+		dbg!("CHECK FOR FREE OUTGOING SLOTS");
 		if !self.state.has_free_outgoing_slot(self.set) && !is_no_slot_occupy {
 			return Err(self)
 		}
