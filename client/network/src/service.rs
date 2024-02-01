@@ -1484,7 +1484,7 @@ where
 	/// The network service that can be extracted and shared through the codebase.
 	service: Arc<NetworkService<B, H>>,
 	/// The *actual* network.
-	network_service: Swarm<Behaviour<B, Client>>,
+	pub network_service: Swarm<Behaviour<B, Client>>,
 	/// The import queue that was passed at initialization.
 	import_queue: Box<dyn ImportQueue<B>>,
 	/// Messages from the [`NetworkService`] that must be processed.
