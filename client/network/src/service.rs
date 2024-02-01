@@ -1546,6 +1546,8 @@ where
 				Poll::Pending => break,
 			};
 
+			dbg!("message from unpin");
+
 			match msg {
 				ServiceToWorkerMsg::AnnounceBlock(hash, data) => this
 					.network_service
@@ -1675,6 +1677,7 @@ where
 			match poll_value {
 				Poll::Pending => break,
 				Poll::Ready(SwarmEvent::Behaviour(BehaviourOut::BlockImport(origin, blocks))) => {
+					dbg!("Block import event occurred.");
 					if let Some(metrics) = this.metrics.as_ref() {
 						metrics.import_queue_blocks_submitted.inc();
 					}
@@ -1686,6 +1689,7 @@ where
 					nb,
 					justifications,
 				))) => {
+					dbg!("Justification import event occurred.");
 					if let Some(metrics) = this.metrics.as_ref() {
 						metrics.import_queue_justifications_submitted.inc();
 					}
@@ -1696,6 +1700,7 @@ where
 					result,
 					..
 				})) => {
+					dbg!("Inbound request event occurred.");
 					if let Some(metrics) = this.metrics.as_ref() {
 						match result {
 							Ok(serve_time) => {
@@ -1736,6 +1741,7 @@ where
 					..
 				})) =>
 					if let Some(metrics) = this.metrics.as_ref() {
+						dbg!("Request finished event occurred.");
 						match result {
 							Ok(_) => {
 								metrics
@@ -1770,6 +1776,7 @@ where
 					protocol,
 				))) =>
 					if let Some(metrics) = this.metrics.as_ref() {
+						dbg!("Random Kademlia Started.");
 						metrics
 							.kademlia_random_queries_total
 							.with_label_values(&[protocol.as_ref()])
@@ -1782,6 +1789,7 @@ where
 					notifications_sink,
 					role,
 				})) => {
+					dbg!("Notification stream opened.");
 					if let Some(metrics) = this.metrics.as_ref() {
 						metrics
 							.notifications_streams_opened_total
@@ -1806,6 +1814,7 @@ where
 					protocol,
 					notifications_sink,
 				})) => {
+					dbg!("Notification stream replaced.");
 					let mut peers_notifications_sinks = this.peers_notifications_sinks.lock();
 					if let Some(s) = peers_notifications_sinks.get_mut(&(remote, protocol)) {
 						*s = notifications_sink;
@@ -1842,6 +1851,7 @@ where
 					remote,
 					protocol,
 				})) => {
+					dbg!("Notification stream closed.");
 					if let Some(metrics) = this.metrics.as_ref() {
 						metrics
 							.notifications_streams_closed_total
@@ -1862,6 +1872,7 @@ where
 					remote,
 					messages,
 				})) => {
+					dbg!("Notifications received.");
 					if let Some(metrics) = this.metrics.as_ref() {
 						for (protocol, message) in &messages {
 							metrics
@@ -1873,12 +1884,15 @@ where
 					this.event_streams.send(Event::NotificationsReceived { remote, messages });
 				},
 				Poll::Ready(SwarmEvent::Behaviour(BehaviourOut::SyncConnected(remote))) => {
+					dbg!("Sync connected.");
 					this.event_streams.send(Event::SyncConnected { remote });
 				},
 				Poll::Ready(SwarmEvent::Behaviour(BehaviourOut::SyncDisconnected(remote))) => {
+					dbg!("Sync disconnected.");
 					this.event_streams.send(Event::SyncDisconnected { remote });
 				},
 				Poll::Ready(SwarmEvent::Behaviour(BehaviourOut::Dht(event, duration))) => {
+					dbg!("Dht event.");
 					if let Some(metrics) = this.metrics.as_ref() {
 						let query_type = match event {
 							DhtEvent::ValueFound(_) => "value-found",
@@ -1900,6 +1914,7 @@ where
 					num_established,
 					concurrent_dial_errors,
 				}) => {
+					dbg!("Swarm Event for Connection established.");
 					if let Some(errors) = concurrent_dial_errors {
 						debug!(target: "sub-libp2p", "Libp2p => Connected({:?}) with errors: {:?}", peer_id, errors);
 					} else {
@@ -1924,6 +1939,7 @@ where
 					endpoint,
 					num_established,
 				}) => {
+					dbg!("Swarm Event for Connection closed.");
 					debug!(target: "sub-libp2p", "Libp2p => Disconnected({:?}, {:?})", peer_id, cause);
 					if let Some(metrics) = this.metrics.as_ref() {
 						let direction = match endpoint {
@@ -1958,18 +1974,21 @@ where
 					}
 				},
 				Poll::Ready(SwarmEvent::NewListenAddr { address, .. }) => {
+					dbg!("Swarm Event for New listen address.");
 					trace!(target: "sub-libp2p", "Libp2p => NewListenAddr({})", address);
 					if let Some(metrics) = this.metrics.as_ref() {
 						metrics.listeners_local_addresses.inc();
 					}
 				},
 				Poll::Ready(SwarmEvent::ExpiredListenAddr { address, .. }) => {
+					dbg!("Swarm Event for Expired listen address.");
 					info!(target: "sub-libp2p", "📪 No longer listening on {}", address);
 					if let Some(metrics) = this.metrics.as_ref() {
 						metrics.listeners_local_addresses.dec();
 					}
 				},
 				Poll::Ready(SwarmEvent::OutgoingConnectionError { peer_id, error }) => {
+					dbg!("Swarm Event for Outgoing connection error.");
 					if let Some(peer_id) = peer_id {
 						trace!(
 							target: "sub-libp2p",
@@ -2011,9 +2030,11 @@ where
 					}
 				},
 				Poll::Ready(SwarmEvent::Dialing(peer_id)) => {
+					dbg!("Swarm Event for Dialing.");
 					trace!(target: "sub-libp2p", "Libp2p => Dialing({:?})", peer_id)
 				},
 				Poll::Ready(SwarmEvent::IncomingConnection { local_addr, send_back_addr }) => {
+					dbg!("Swarm Event for Incoming connection.");
 					trace!(target: "sub-libp2p", "Libp2p => IncomingConnection({},{}))",
 						local_addr, send_back_addr);
 					if let Some(metrics) = this.metrics.as_ref() {
@@ -2025,6 +2046,7 @@ where
 					send_back_addr,
 					error,
 				}) => {
+					dbg!("Swarm Event for Incoming connection error.");
 					debug!(
 						target: "sub-libp2p",
 						"Libp2p => IncomingConnectionError({},{}): {}",
@@ -2048,6 +2070,7 @@ where
 					}
 				},
 				Poll::Ready(SwarmEvent::BannedPeer { peer_id, endpoint }) => {
+					dbg!("Swarm Event for Banned peer.");
 					debug!(
 						target: "sub-libp2p",
 						"Libp2p => BannedPeer({}). Connected via {:?}.",
@@ -2061,6 +2084,7 @@ where
 					}
 				},
 				Poll::Ready(SwarmEvent::ListenerClosed { reason, addresses, .. }) => {
+					dbg!("Swarm Event for Listener closed.");
 					if let Some(metrics) = this.metrics.as_ref() {
 						metrics.listeners_local_addresses.sub(addresses.len() as u64);
 					}
@@ -2080,6 +2104,7 @@ where
 					}
 				},
 				Poll::Ready(SwarmEvent::ListenerError { error, .. }) => {
+					dbg!("Swarm Event for Listener error.");
 					debug!(target: "sub-libp2p", "Libp2p => ListenerError: {}", error);
 					if let Some(metrics) = this.metrics.as_ref() {
 						metrics.listeners_errors_total.inc();
@@ -2088,19 +2113,6 @@ where
 			};
 		}
 
-		loop {
-			dbg!("debug");
-			dbg!("debug");
-			dbg!("debug");
-			dbg!("debug");
-			dbg!("debug");
-			dbg!("debug");
-			dbg!("debug");
-			dbg!("debug");
-			dbg!("debug");
-			dbg!("debug");
-			dbg!("debug");
-		}
 		let num_connected_peers =
 			this.network_service.behaviour_mut().user_protocol_mut().num_connected_peers();
 
